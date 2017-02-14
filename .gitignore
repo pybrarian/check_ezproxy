@@ -1,0 +1,13 @@
+env
+winEnv
+screenshots
+.vs
+*.pyproj
+*.pyproj.user
+*.sln
+*.log
+test.py
+.idea
+__pycache__
+
+*~
