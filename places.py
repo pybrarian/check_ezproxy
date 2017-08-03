@@ -16,7 +16,7 @@ Record = namedtuple('Record', 'name url')
 
 def build_record_with_appropriate_proxy(api_record):
     url = api_record['url']
-    if api_record['meta']['enable_proxy']:
+    if int(api_record['meta']['enable_proxy']):
         url = cfg['ezproxy_prefix'] + url
     return Record(api_record['name'], url)
 

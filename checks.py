@@ -22,9 +22,8 @@ def check_text(db):
         database, must have a name and a url property
     :return: The passed in parameter
     """
-    url = check_and_prepend_proxy(db.url)
     try:
-        database_request = requests.get(url, timeout=10)
+        database_request = requests.get(db.url, timeout=10)
         if cfg['ezproxy_error_text'] in database_request.text:
             db = Checked_Url(db.name, db.url, 'incorrect_config')
     except requests.exceptions.ConnectionError:
@@ -33,18 +32,3 @@ def check_text(db):
         db = Checked_Url(db.name, db.url, 'read_timeout')
     return db
 
-
-def check_and_prepend_proxy(url):
-    """
-    See if link needs a proxy prefix and add it if so.
-
-    Links pulled from LibGuides will smartly have the proxy, as does anything
-    with the proxy prefix. For anything else, we need to add the proxy prefix
-    to ensure all links are checking for proper configuration.
-
-    :param url: String representation of a URL
-    :return: A string representation of a URL with the proxy prefix
-    """
-    if cfg['ezproxy_prefix'] not in url:
-        url = '{}{}'.format(cfg['ezproxy_prefix'], url)
-    return url

@@ -1,14 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
-from pprint import pprint
+
+
+import gevent.monkey
+import gevent
 
 import checks
-from config import cfg
 import places
 from registration import places_map, checks_map
 
+gevent.monkey.patch_all()
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -37,4 +40,13 @@ if __name__ == '__main__':
 
     urls = get_urls()
 
-    print('All done.')
+    threads = [gevent.spawn(type_of_check, url) for url in urls]
+    gevent.joinall(threads)
+
+    filtered_results = (thread.value for thread in threads if hasattr(thread.value, 'status'))
+
+    for i in filtered_results:
+        print(i.name)
+        print(i.url)
+        print(i.status)
+        print('-----')
