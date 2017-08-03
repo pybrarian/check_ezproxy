@@ -1,7 +1,4 @@
-import os.path
-
 cfg = {
-    'path_to_home_dir': os.path.expanduser('~'),
     'ezproxy_prefix': 'YOUR EZPROXY PREFIX',
     'max_workers': 4,
     'libguides_api_url': 'API ENDPOINT FOR LIBGUIDES DATABASE LIST', # including api key

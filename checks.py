@@ -1,9 +1,12 @@
-import os
+from collections import namedtuple
 
 import requests
 
 from config import cfg
 from registration import register
+
+
+Checked_Url = namedtuple('Checked_Url', 'name url status')
 
 
 @register('text', __name__)
@@ -19,16 +22,15 @@ def check_text(db):
         database, must have a name and a url property
     :return: The passed in parameter
     """
-    print('Checking {0}'.format(db.name.encode('ascii', 'replace')))
     url = check_and_prepend_proxy(db.url)
     try:
         database_request = requests.get(url, timeout=10)
         if cfg['ezproxy_error_text'] in database_request.text:
-            MISCONFIGURED_DATABASES.append(db)
+            db = Checked_Url(db.name, db.url, 'incorrect_config')
     except requests.exceptions.ConnectionError:
-        MISCONFIGURED_DATABASES.append(db)
+        db = Checked_Url(db.name, db.url, 'connection_error')
     except requests.exceptions.ReadTimeout:
-        MISCONFIGURED_DATABASES.append(db)
+        db = Checked_Url(db.name, db.url, 'read_timeout')
     return db
 
 
