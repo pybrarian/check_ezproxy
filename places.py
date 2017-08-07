@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Get a list of Record tuples from different sources."""
 
 from collections import namedtuple
@@ -6,34 +6,32 @@ from collections import namedtuple
 import requests
 
 from kb import KB
-
-from config import cfg
 from registration import register
 
 # Checks using this ask for a name and url property
 Record = namedtuple('Record', 'name url')
 
 
-def build_record_with_appropriate_proxy(api_record):
+def build_record_with_appropriate_proxy(api_record, config):
     url = api_record['url']
     if int(api_record['meta']['enable_proxy']):
-        url = cfg['ezproxy_prefix'] + url
+        url = config['ezproxy_prefix'] + url
     return Record(api_record['name'], url)
 
 
 @register('libguides', __name__)
-def get_from_libguides():
+def get_from_libguides(config):
     """
     Make a list of records scraped from university LibGuide A-Z list.
 
     :return: A list of Record named tuples
     """
-    r = requests.get(cfg['libguides_api_url']).json()
-    return [build_record_with_appropriate_proxy(x) for x in r]
+    r = requests.get(config['libguides_api_url']).json()
+    return [build_record_with_appropriate_proxy(x, config) for x in r]
 
 
 @register('oclc', __name__)
-def get_from_oclc():
+def get_from_oclc(config):
     """
     Get all WSU online journals from the Knowledge base.
 
@@ -43,10 +41,9 @@ def get_from_oclc():
 
     Nested list comprehension can be read just like nested for loop going down
     """
-    print('Getting Knowledge Base links')
-    kb = KB(cfg['kb_wskey'])
+    kb = KB(config['kb_wskey'])
 
     return [Record(entry['title'], url['href'])
-            for entry in kb.get_all_entries(cfg['kb_collections'])
+            for entry in kb.get_all_entries(config['kb_collections'])
             for url in entry['links']
             if 'rel' in url and url['rel'] == 'canonical']
