@@ -28,10 +28,14 @@ def get_args():
     parser.add_argument('-w', '--write',
                         help='Write to file.',
                         action='store_true')
-    parser.add_argument('-p', '--output_path',
+    parser.add_argument('-f', '--output_file',
                         help=('Path of location to save output with name of file. '
                               'Default is users HOME directory as check_proxy.txt.'),
                         default=os.path.join(os.path.expanduser('~'), 'check_proxy.txt'))
+    parser.add_argument('-p', '--proxy',
+                        help='Force the presence or absence of a proxy prefix. '
+                             'Without the tool will try to determine which urls to proxy.',
+                        choices=('force', 'no_proxy'))
 
     return parser.parse_args()
 
@@ -54,18 +58,18 @@ def main(config):
     get_urls = places_map[args.urlsource]
     type_of_check = checks_map[args.type]
 
+    if args.write:
+        f = open(args.output_file, 'wt')
+        output_goes_to = f
+    else:
+        output_goes_to = sys.stdout
+
     print('Getting URLs from {0}.'.format(args.urlsource))
-    urls = get_urls(config)
+    urls = get_urls(config, args.proxy)
 
     print('Running checks on URLs.')
     threads = [gevent.spawn(type_of_check, url, config) for url in urls]
     gevent.joinall(threads)
-
-    if args.write:
-        f = open(args.output_path, 'wt')
-        output_goes_to = f
-    else:
-        output_goes_to = sys.stdout
 
     print('Filtering Results.')
     for i in (thread.value for thread in threads if hasattr(thread.value, 'status')):

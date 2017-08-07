@@ -26,7 +26,7 @@ def check_text(db, config):
     try:
         database_request = requests.get(db.url, timeout=10)
         if config['ezproxy_error_text'] in database_request.text:
-            db = Checked_Url(db.name, db.url, 'Incorrect Configuration')
+            db = Checked_Url(db.name, db.url, 'Incorrect Proxy Configuration')
     except requests.exceptions.ConnectionError:
         db = Checked_Url(db.name, db.url, 'Connection Error')
     except requests.exceptions.ReadTimeout:

@@ -12,28 +12,37 @@ from registration import register
 Record = namedtuple('Record', 'name url')
 
 
-def build_record_with_appropriate_proxy(api_record, config):
+def libguides_record_with_appropriate_proxy(api_record, config, proxy=None):
     url = api_record['url']
-    if int(api_record['meta']['enable_proxy']):
+    if proxy == 'no_proxy':
+        pass
+    elif proxy == 'force' or int(api_record['meta']['enable_proxy']):
         url = config['ezproxy_prefix'] + url
     return Record(api_record['name'], url)
 
 
 @register('libguides', __name__)
-def get_from_libguides(config):
+def get_from_libguides(config, proxy=None):
     """
-    Make a list of records scraped from university LibGuide A-Z list.
+    Make a list of records from university LibGuide A-Z list.
 
     :return: A list of Record named tuples
     """
     r = requests.get(config['libguides_api_url']).json()
-    return [build_record_with_appropriate_proxy(x, config) for x in r]
+    return [libguides_record_with_appropriate_proxy(x, config, proxy) for x in r]
+
+
+def oclc_record_with_appropriate_proxy(api_entry, config, proxy=None):
+    for url in api_entry['links']:
+        if 'rel' in url and url['rel'] == 'canonical':
+            return Record(api_entry['title'],
+                          url['href'] if proxy == 'no_proxy' else config['ezproxy_prefix'] + url['href'])
 
 
 @register('oclc', __name__)
-def get_from_oclc(config):
+def get_from_oclc(config, proxy=None):
     """
-    Get all WSU online journals from the Knowledge base.
+    Get all online journals from the Knowledge base.
 
     Uses a connection to the Knowledge Base API as an implicit argument
 
@@ -42,8 +51,7 @@ def get_from_oclc(config):
     Nested list comprehension can be read just like nested for loop going down
     """
     kb = KB(config['kb_wskey'])
+    return [oclc_record_with_appropriate_proxy(entry, config, proxy)
+            for collection in config['kb_collections']
+            for entry in kb.get_all_entries(collection)]
 
-    return [Record(entry['title'], url['href'])
-            for entry in kb.get_all_entries(config['kb_collections'])
-            for url in entry['links']
-            if 'rel' in url and url['rel'] == 'canonical']
