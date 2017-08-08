@@ -2,7 +2,9 @@
 """Get a list of Record tuples from different sources."""
 
 from collections import namedtuple
+import os
 
+import pykbart
 import requests
 
 from kb import KB
@@ -47,11 +49,20 @@ def get_from_oclc(config, proxy=None):
     Uses a connection to the Knowledge Base API as an implicit argument
 
     :return: A list of Record named tuples
-
-    Nested list comprehension can be read just like nested for loop going down
     """
     kb = KB(config['kb_wskey'])
     return [oclc_record_with_appropriate_proxy(entry, config, proxy)
             for collection in config['kb_collections']
             for entry in kb.get_all_entries(collection)]
 
+
+def kbart_with_appropriate_proxy(record, config, proxy):
+    return Record(record.title, record.url if proxy == 'no_proxy' else config['ezproxy_prefix'] + record.url)
+
+
+@register('kbart', __name__)
+def get_from_kbart(config, proxy=None, file_path=None):
+    path_to_file = os.path.abspath(os.path.expanduser(file_path))
+    with pykbart.KbartReader(path_to_file) as reader:
+        return [kbart_with_appropriate_proxy(record, config, proxy)
+                for record in reader]

@@ -36,6 +36,8 @@ def get_args():
                         help='Where to get database URLs.',
                         default='libguides',
                         choices=places_map.keys())
+    parser.add_argument('-k', '--kbart',
+                        help='Path to a KBART file to check.')
     parser.add_argument('-t', '--type',
                         help='Type of check to run.',
                         default='text',
@@ -135,7 +137,7 @@ def main(config, args, output):
         output_goes_to = sys.stdout
 
     print('Getting URLs from {0}.'.format(args.urlsource))
-    urls = get_urls(config, args.proxy)
+    urls = get_urls(config, args.proxy, args.kbart)
 
     print('Running checks on URLs.')
     threads = [gevent.spawn(type_of_check, url, config) for url in urls]
