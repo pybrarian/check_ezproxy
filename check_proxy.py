@@ -1,18 +1,33 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import os
+import pickle
 import sys
 
 import gevent.monkey
 import gevent
 
 import checks
-from config import cfg
 import places
 from registration import places_map, checks_map
 
+try:
+    from config import cfg
+except ImportError:
+    pass
+
 gevent.monkey.patch_all()
+
+
+class ConfigError(Exception):
+    def __init__(self, message=None):
+        self.message = message
+
+    def __str__(self):
+        return ('There is an error in your configuration.'
+                if self.message is None else self.message)
 
 
 def get_args():
@@ -36,7 +51,18 @@ def get_args():
                         help='Force the presence or absence of a proxy prefix. '
                              'Without the tool will try to determine which urls to proxy.',
                         choices=('force', 'no_proxy'))
-
+    parser.add_argument('-c', '--config-file',
+                        help='Full path to a JSON file containing necessary config.')
+    parser.add_argument('-s', '--save-config',
+                        help='For use with -c option. Saves the configuration '
+                             'file passed in so you don\'t have to keep passing it.',
+                        action='store_true')
+    parser.add_argument('--flush-config',
+                        help='Flush out any saved config. Will only get rid of '
+                             'configs imported from JSON, you have to edit '
+                             'Python-based config directly. Can be used in same '
+                             'command with a new config.',
+                        action='store_true')
     return parser.parse_args()
 
 
@@ -52,9 +78,53 @@ def output(result):
             ))
 
 
-def main(config):
-    args = get_args()
+def pickle_config(config, pickle_path):
+    with open(pickle_path, 'wb') as w:
+        pickle.dump(config, w)
 
+
+def unpickle_config(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+
+
+def get_json_config(args, pickle_path):
+    try:
+        path_to_file = os.path.abspath(os.path.expanduser(args.config_file))
+        with open(path_to_file, 'r') as f:
+            cfg = json.load(f)
+            if args.save_config:
+                pickle_config(cfg, pickle_path)
+            return cfg
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            'Your config file was not found. Check your path or rename '
+            'config-template.py to config.py and change defaults.')
+
+
+def get_config(args):
+    pickle_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.pickle')
+
+    if args.flush_config and os.path.exists(pickle_file):
+        os.remove(pickle_file)
+    if os.path.exists(pickle_file):
+        if args.config_file:
+            raise ConfigError('You have a saved config. Use --flush-config with '
+                              '--config [file] and optionally -s if you want to '
+                              'load a new configuration file.')
+        config = unpickle_config(pickle_file)
+    elif args.config_file:
+        config = get_json_config(args, pickle_file)
+    else:
+        try:
+            config = cfg
+        except NameError:
+            raise ConfigError('Can not find a usable configuration. Please '
+                              'check your configs or consult the documentation')
+    return config
+
+
+def main(config, args, output):
     get_urls = places_map[args.urlsource]
     type_of_check = checks_map[args.type]
 
@@ -72,8 +142,8 @@ def main(config):
     gevent.joinall(threads)
 
     print('Filtering Results.')
-    for i in (thread.value for thread in threads if hasattr(thread.value, 'status')):
-        print(output(i), file=output_goes_to)
+    for error_result in (thread.value for thread in threads if hasattr(thread.value, 'status')):
+        print(output(error_result), file=output_goes_to)
 
     try:
         f.close()
@@ -82,4 +152,6 @@ def main(config):
 
 
 if __name__ == '__main__':
-    main(cfg)
+    args = get_args()
+    cfg = get_config(args)
+    main(cfg, args, output)
