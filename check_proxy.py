@@ -65,7 +65,7 @@ def get_args():
                              'Python-based config directly. Can be used in same '
                              'command with a new config.',
                         action='store_true')
-    return parser.parse_args()
+    return parser
 
 
 def output(result):
@@ -94,10 +94,10 @@ def get_json_config(args, pickle_path):
     try:
         path_to_file = os.path.abspath(os.path.expanduser(args.config_file))
         with open(path_to_file, 'r') as f:
-            cfg = json.load(f)
+            config = json.load(f)
             if args.save_config:
-                pickle_config(cfg, pickle_path)
-            return cfg
+                pickle_config(config, pickle_path)
+            return config
     except FileNotFoundError:
         raise FileNotFoundError(
             'Your config file was not found. Check your path or rename '
@@ -126,7 +126,7 @@ def get_config(args):
     return config
 
 
-def main(config, args, output):
+def main(config, args, output=output):
     get_urls = places_map[args.urlsource]
     type_of_check = checks_map[args.type]
 
@@ -154,6 +154,6 @@ def main(config, args, output):
 
 
 if __name__ == '__main__':
-    args = get_args()
+    args = get_args().parse_args()
     cfg = get_config(args)
     main(cfg, args, output)
