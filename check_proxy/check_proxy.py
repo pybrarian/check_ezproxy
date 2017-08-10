@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import argparse
 import json
@@ -6,19 +6,21 @@ import os
 import pickle
 import sys
 
-import gevent.monkey
 import gevent
+import gevent.monkey
 
-import checks
-import places
-from registration import places_map, checks_map
+from .registration import places_map, checks_map
+import check_proxy.places
+import check_proxy.checks
 
 try:
-    from config import cfg
+    from .config import cfg
 except ImportError:
     pass
 
 gevent.monkey.patch_all()
+
+__version__ = '0.1.0'
 
 
 class ConfigError(Exception):
@@ -31,36 +33,45 @@ class ConfigError(Exception):
 
 
 def get_args():
+    places_to_check = places_map.keys()
+    checks_to_do = checks_map.keys()
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--urlsource',
-                        help='Where to get database URLs.',
+                        help='where to get database URLs. Allowed values are [' + ', '.join(places_to_check) + ']. Default is LibGuides.',
+                        metavar='',
                         default='libguides',
-                        choices=places_map.keys())
+                        choices=places_to_check)
     parser.add_argument('-k', '--kbart',
-                        help='Path to a KBART file to check.')
+                        help='path to a KBART file to check.',
+                        metavar='')
     parser.add_argument('-t', '--type',
-                        help='Type of check to run.',
+                        help='type of check to run. Allowed values are [' + ', '.join(checks_to_do) + ']. Default is text (check EZProxy by known unique text).',
+                        metavar='',
                         default='text',
                         choices=checks_map.keys())
     parser.add_argument('-w', '--write',
-                        help='Write to file.',
+                        help='write results to file.',
                         action='store_true')
     parser.add_argument('-f', '--output_file',
                         help=('Path of location to save output with name of file. '
                               'Default is users HOME directory as check_proxy.txt.'),
-                        default=os.path.join(os.path.expanduser('~'), 'check_proxy.txt'))
+                        default=os.path.join(os.path.expanduser('~'), 'check_proxy.txt'),
+                        metavar='')
     parser.add_argument('-p', '--proxy',
-                        help='Force the presence or absence of a proxy prefix. '
-                             'Without the tool will try to determine which urls to proxy.',
-                        choices=('force', 'no_proxy'))
+                        help='force the presence or absence of a proxy prefix. '
+                             'Without the tool will try to determine which urls to proxy. '
+                             'Acceptable values are [force, no_proxy].',
+                        choices=('force', 'no_proxy'),
+                        metavar='')
     parser.add_argument('-c', '--config-file',
-                        help='Full path to a JSON file containing necessary config.')
+                        help='full path to a JSON file containing necessary config.',
+                        metavar='')
     parser.add_argument('-s', '--save-config',
-                        help='For use with -c option. Saves the configuration '
+                        help='for use with -c option. Saves the configuration '
                              'file passed in so you don\'t have to keep passing it.',
                         action='store_true')
     parser.add_argument('--flush-config',
-                        help='Flush out any saved config. Will only get rid of '
+                        help='flush out any saved config. Will only get rid of '
                              'configs imported from JSON, you have to edit '
                              'Python-based config directly. Can be used in same '
                              'command with a new config.',
@@ -126,7 +137,9 @@ def get_config(args):
     return config
 
 
-def main(config, args, output=output):
+def run(config, args, output=output):
+    if args.kbart:
+        args.urlsource = 'kbart'
     get_urls = places_map[args.urlsource]
     type_of_check = checks_map[args.type]
 
@@ -153,7 +166,7 @@ def main(config, args, output=output):
         pass
 
 
-if __name__ == '__main__':
+def main():
     args = get_args().parse_args()
     cfg = get_config(args)
-    main(cfg, args, output)
+    run(cfg, args, output)

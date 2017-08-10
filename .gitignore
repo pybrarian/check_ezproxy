@@ -1,4 +1,4 @@
-config.py
+check_proxy/config.py
 *.pickle
 
 # Created by .ignore support plugin (hsz.mobi)

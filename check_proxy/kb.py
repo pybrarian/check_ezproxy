@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding: utf-8
 
 import requests
 
 
-class KB():
+class KB(object):
     """
     Read and represent data from OCLC's knowledge base.
 

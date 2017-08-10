@@ -1,17 +1,18 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Get a list of Record tuples from different sources."""
 
-from collections import namedtuple
 import os
+from collections import namedtuple
 
 import pykbart
 import requests
 
-from kb import KB
-from registration import register
+from .kb import KB
+from check_proxy.registration import register
 
 # Checks using this ask for a name and url property
 Record = namedtuple('Record', 'name url')
+this_module = 'places'
 
 
 def libguides_record_with_appropriate_proxy(api_record, config, proxy=None):
@@ -23,8 +24,8 @@ def libguides_record_with_appropriate_proxy(api_record, config, proxy=None):
     return Record(api_record['name'], url)
 
 
-@register('libguides', __name__)
-def get_from_libguides(config, proxy=None):
+@register('libguides', this_module)
+def get_from_libguides(config, proxy=None, file_path=None):
     """
     Make a list of records from university LibGuide A-Z list.
 
@@ -41,8 +42,8 @@ def oclc_record_with_appropriate_proxy(api_entry, config, proxy=None):
                           url['href'] if proxy == 'no_proxy' else config['ezproxy_prefix'] + url['href'])
 
 
-@register('oclc', __name__)
-def get_from_oclc(config, proxy=None):
+@register('oclc', this_module)
+def get_from_oclc(config, proxy=None, file_path=None):
     """
     Get all online journals from the Knowledge base.
 
@@ -60,7 +61,7 @@ def kbart_with_appropriate_proxy(record, config, proxy):
     return Record(record.title, record.url if proxy == 'no_proxy' else config['ezproxy_prefix'] + record.url)
 
 
-@register('kbart', __name__)
+@register('kbart', this_module)
 def get_from_kbart(config, proxy=None, file_path=None):
     path_to_file = os.path.abspath(os.path.expanduser(file_path))
     with pykbart.KbartReader(path_to_file) as reader:

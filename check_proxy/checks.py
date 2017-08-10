@@ -1,16 +1,16 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from collections import namedtuple
 
 import requests
 
-from registration import register
-
+from .registration import register
 
 Checked_Url = namedtuple('Checked_Url', 'name url status')
+this_module = 'checks'
 
 
-@register('text', __name__)
+@register('text', this_module)
 def check_text(db, config):
     """
     Send a get request, see if EZProxy error message returned.
@@ -34,7 +34,7 @@ def check_text(db, config):
     return db
 
 
-@register('links', __name__)
+@register('links', this_module)
 def check_link(db, config):
     try:
         database_request = requests.head(db.url, timeout=10)
