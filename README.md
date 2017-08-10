@@ -102,7 +102,7 @@ Add New Url Sources or types of checks
 ======================================
 import the 'register' decorator from registration.py.
 
-###For a new Url source
+### For a new Url source
 Write a function that returns an iterable (i.e. list or tuple) of classes or named tuples with a url and name element. Named tuple can be used like so:
 ```python
 from collections import namedtuple
@@ -120,7 +120,7 @@ def get_links_here():
 ```
 Save that file to the same directory as the rest of the scripts, import it in check proxy, and it should automatically be available in the command line script.
 
-###For a new type of check
+### For a new type of check
 Do the same thing as for a url source above, except the second argument to the decorator should be 'checks' and your function should take a database argument and a config argument, run some kind of check, and return that object if everything is fine and an object with name, url, and a new status attribute if something went wrong.
 ```python
 from registration import register
