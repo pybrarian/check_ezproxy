@@ -4,7 +4,7 @@
 import requests
 
 
-class KB():
+class KB(object):
     """
     Read and represent data from OCLC's knowledge base.
 
