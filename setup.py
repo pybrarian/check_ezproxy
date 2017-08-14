@@ -10,7 +10,7 @@ from setuptools import setup
 
 version = re.search(
     '^__version__\s*=\s*\'(.*)\'',
-    open('check_proxy/check_proxy.py').read(),
+    open('check_ezproxy/check_ezproxy.py').read(),
     re.M
     ).group(1)
 
@@ -20,10 +20,10 @@ with open("README.md", "rb") as f:
 
 
 setup(
-    name="check_proxy",
-    packages=["check_proxy"],
+    name="check_ezproxy",
+    packages=["check_ezproxy"],
     entry_points={
-        "console_scripts": ['check_proxy = check_proxy.check_proxy:main']
+        "console_scripts": ['check_ezproxy = check_ezproxy.check_ezproxy:main']
         },
     version=version,
     description="Command line tool to test EZProxy stanza configurations and link health.",
@@ -31,7 +31,7 @@ setup(
     license='MIT',
     author="Ed Hill",
     author_email="hill.charles2@gmail.com",
-    url="https://github.com/chill17/check_proxy/",
+    url="https://github.com/chill17/check_ezproxy/",
     install_requires=['requests', 'pykbart', 'gevent'],
     classifiers=[
         'Development Status :: 4 - Beta',

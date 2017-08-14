@@ -8,7 +8,7 @@ import pykbart
 import requests
 
 from .kb import KB
-from check_proxy.registration import register
+from check_ezproxy.registration import register
 
 # Checks using this ask for a name and url property
 Record = namedtuple('Record', 'name url')

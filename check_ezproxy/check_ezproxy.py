@@ -10,8 +10,8 @@ import gevent
 import gevent.monkey
 
 from .registration import places_map, checks_map
-import check_proxy.places
-import check_proxy.checks
+import check_ezproxy.places
+import check_ezproxy.checks
 
 try:
     from .config import cfg
@@ -54,8 +54,8 @@ def get_args():
                         action='store_true')
     parser.add_argument('-f', '--output_file',
                         help=('Path of location to save output with name of file. '
-                              'Default is users HOME directory as check_proxy.txt.'),
-                        default=os.path.join(os.path.expanduser('~'), 'check_proxy.txt'),
+                              'Default is users HOME directory as check_ezproxy.txt.'),
+                        default=os.path.join(os.path.expanduser('~'), 'check_ezproxy.txt'),
                         metavar='')
     parser.add_argument('-p', '--proxy',
                         help='force the presence or absence of a proxy prefix. '
