@@ -13,12 +13,15 @@ Easiest way is:
 
 ``pip install check_proxy``
 
-Or: 1. Clone the repository. 2. Optional: If you want to make the file
-exectuable, run chmod +x filename (in a bash system; this makes it so
-you shouldn't have to prepend each call with python) 3. From the main
-directory, run ``python check_proxy_run.py -args`` (or
-``./check_proxy_run.py -args`` if you did step 2 above) 4. Run
-``python setup.py install`` to install
+Or:
+
+1. Clone the repository.
+
+2. Optional: If you want to make the fileexectuable, run chmod +x filename (in a bash system; this makes it so you shouldn't have to prepend each call with python)
+
+3. From the main directory, run ``python check_proxy_run.py -args`` (or ``./check_proxy_run.py -args`` if you did step 2 above)
+
+4. Run ``python setup.py install`` to install
 
 Use
 ===
@@ -38,45 +41,37 @@ Configuration
 =============
 
 Some minimal configuration is needed for the checks to be able to run,
-and there are a couple of ways to supply this. - Rename
-'config\_template.py' to 'config.py' and supply the listed parameters.
-This is best for quick testing or if you want to extend the tool. - Make
-a .json file containing the necessary config, then point the tool to it
-with the -c argument. You can optionally use a -s flag to save these
-configs so you don't need to point toward them again, but note that
-these will override any other configs you may try to give. You will need
-to use ``--flush-config`` to use another configuration. - You can also
-use the package as a tool for making your own utility and provide config
-in your script. Details below.
+and there are a couple of ways to supply this.
 
-Configurations to set are: - **ezproxy\_prefix**- the full prefix for
-your EZProxy server, protocol included - **libguides\_api\_url**- The
-full URL to LibGuides API for database assets including your site id,
-API key, and asset\_type=10 as query parameters (v. 1.1 only at this
-time, v. 1.2 soon) - **ezproxy\_error\_text**- Some text on your page
-for proxied links with no stanzas set that you can be relatively sure is
-unique. The tool will match against this the page text to determine
-which links are not properly configured. - **kb\_wskey**- If you want to
-check links directly from the OCLC knowledge base, you will need to
-apply for an API key. Only the WSKey is needed here, not the secret. -
-**kb\_collections**- The name of the collections in the knowledge base
-to check. If using Python for config these can be in a tuple or list (or
-any iterable), if using JSON they go in an array. Even if you only have
-1 to check, it needs to be in an iterable wrapper.
+- Rename 'config\_template.py' to 'config.py' and supply the listed parameters. This is best for quick testing or if you want to extend the tool.
+
+- Make a .json file containing the necessary config, then point the tool to it with the -c argument. You can optionally use a -s flag to save these configs so you don't need to point toward them again, but note that these will override any other configs you may try to give. You will need to use ``--flush-config`` to use another configuration.
+
+- You can also use the package as a tool for making your own utility and provide config in your script. Details below.
+
+Configurations to set are:
+
+- **ezproxy\_prefix**- the full prefix for your EZProxy server, protocol included
+- **libguides\_api\_url**- The full URL to LibGuides API for database assets including your site id, API key, and asset\_type=10 as query parameters (v. 1.1 only at this  time, v. 1.2 soon)
+- **ezproxy\_error\_text**- Some text on your page for proxied links with no stanzas set that you can be relatively sure is unique. The tool will match against this the page text to determine which links are not properly configured.
+- **kb\_wskey**- If you want to check links directly from the OCLC knowledge base, you will need to apply for an API key. Only the WSKey is needed here, not the secret.
+- **kb\_collections**- The name of the collections in the knowledge base to check. If using Python for config these can be in a tuple or list (or any iterable), if using JSON they go in an array. Even if you only have 1 to check, it needs to be in an iterable wrapper.
 
 Arguments
 =========
 
 Note: none of these arguments are mandatory, though some rely on others
-to be set as well. ### -u, --urlsource \*\*\* The location to get the
-urls to run the check on. Current possible options are 'libguides',
+to be set as well.
+
+-u, --urlsource
+~~~~~~~~~~~~~~~~
+The location to get the urls to run the check on. Current possible options are 'libguides',
 'oclc', and 'kbart' (will have to use -k to provide the path to the
 KBART file to check. -k can be used on its own as well).
 
+
 -t, --type
 ~~~~~~~~~~
-
---------------
 
 The type of check to run. Current supported checks are 'text' and
 'link'.
@@ -92,8 +87,6 @@ and check the status code.
 -k, --kbart
 ~~~~~~~~~~~
 
---------------
-
 The path to a kbart file to check. If using this, it is not necessary to
 set a --urlsource, though it is fine to do so. The path can be relative,
 absolute, or relative to your home directory (~)
@@ -101,14 +94,10 @@ absolute, or relative to your home directory (~)
 -w, --write
 ~~~~~~~~~~~
 
---------------
-
 Write the output to a file rather than printing to the standard output
 
 -f, --output-file
 ~~~~~~~~~~~~~~~~~
-
---------------
 
 The path and filename you wish to use in conjunction with the ``-w``. It
 is necessary to also use ``-w``, but if you do not specify a file here
@@ -116,8 +105,6 @@ it will default to 'check\_proxy.txt' in your home directory.
 
 -p, --proxy
 ~~~~~~~~~~~
-
---------------
 
 Force the presence or absence of a proxy prefix. Acceptable values are:
 - ``force`` - ``no_proxy``
@@ -134,8 +121,6 @@ proxied)
 -c, --config-file
 ~~~~~~~~~~~~~~~~~
 
---------------
-
 Use a JSON config file rather than one of the Python options for config
 files. Arg just takes the path (relative, absolute, or relative to home)
 of the .json file you want to use.
@@ -143,16 +128,12 @@ of the .json file you want to use.
 -s, --save-config
 ~~~~~~~~~~~~~~~~~
 
---------------
-
 To be used in conjunction with ``-c``, will save the config file you
 used so that you don't have to provide the path to it every time. This
 saved config will trump everything.
 
 --flush-config
 ~~~~~~~~~~~~~~
-
---------------
 
 Flush any saved JSON configuration and use either a Python or new JSON
 configuration. Can be used on the same call as
