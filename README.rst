@@ -11,28 +11,28 @@ Installation
 
 Easiest way is:
 
-``pip install check_proxy``
+``pip install check_ezproxy``
 
 Or:
 
 1. Clone the repository.
 
-2. Optional: If you want to make the fileexectuable, run chmod +x filename (in a bash system; this makes it so you shouldn't have to prepend each call with python)
+2. Optional: If you want to make the file exectuable, run ``chmod +x check_ezproxy_run.py`` (in a bash system; this makes it so you shouldn't have to prepend each call with python)
 
-3. From the main directory, run ``python check_proxy_run.py -args`` (or ``./check_proxy_run.py -args`` if you did step 2 above)
+3. From the main directory, run ``python check_ezproxy_run.py -args`` (or ``./check_proxy_run.py -args`` if you did step 2 above)
 
-4. Run ``python setup.py install`` to install
+4. Run ``python setup.py install`` to install (after this, you can just use the ``check_ezproxy``, setup makes it available everywhere)
 
 Use
 ===
 
-Installing via pip or setup.py will make the ``check_proxy`` command
+Installing via pip or setup.py will make the ``check_ezproxy`` command
 available globally. It is suggested you install it into a virtual
 environment to:
 
-1. not permanently pollute the global namespace in your shell,
-   especially since check\_proxy is not a terribly unique name
-2. not pollute your base python packages, as this utility uses some
+1. not permanently pollute the global namespace in your shell
+
+2. not pollute your base Python packages, as this utility uses some
    popular libraries and even if this tool isn't necessarily reliant on
    a particular version, another tool might be. Best to keep em
    separated.
@@ -64,7 +64,7 @@ Note: none of these arguments are mandatory, though some rely on others
 to be set as well.
 
 -u, --urlsource
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 The location to get the urls to run the check on. Current possible options are 'libguides',
 'oclc', and 'kbart' (will have to use -k to provide the path to the
 KBART file to check. -k can be used on its own as well).
@@ -81,7 +81,7 @@ server and compare the text returned to known error text (can't use
 status codes because those are 200 even for a wrongly configured
 database). At Westfield this text is 'your EZproxy administrator must
 first' but you will need to set comparison text for your institution as
-ERROR\_TEXT in constants.py ``-t link`` will just make a head request
+ERROR\_TEXT in constants.py ``-t links`` will just make a head request
 and check the status code.
 
 -k, --kbart
@@ -107,7 +107,9 @@ it will default to 'check\_proxy.txt' in your home directory.
 ~~~~~~~~~~~
 
 Force the presence or absence of a proxy prefix. Acceptable values are:
-- ``force`` - ``no_proxy``
+- ``force``
+
+- ``no_proxy``
 
 ``force`` will cause every link to have a proxy prefix regardless of
 whether it 'should' (i.e. whether the LibGuides Database A-Z list has it
@@ -151,9 +153,9 @@ Call with a JSON config that we are saving.
 
 ``check_proxy --config=./config.json -s``
 
-Check set OCLC knowledge base collection with an updated config.json
+Check set OCLC knowledge base collection with an updated config.json (you can combine flags, but any flag that takes an argument must be the last one, and you can only have 1 of these when combining)
 
-``check_proxy --flush-config -c ./config.json -s``
+``check_proxy --flush-config -sc ./config.json``
 
 Add New Url Sources or types of checks
 ======================================
@@ -172,7 +174,7 @@ used like so:
     from collections import namedtuple
     Record = namedtuple('Record', 'name url')
     new_record = Record('this_name', 'http://www.example.com')
-    new_record.name #will output 'this_name'
+    print(new_record.name)  # will output 'this_name'
 
 Decorate that function with the register decorator that takes what you
 want the argument to be called in the command line script and 'places'
