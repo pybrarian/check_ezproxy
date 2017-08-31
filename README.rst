@@ -19,7 +19,7 @@ Or:
 
 2. Optional: If you want to make the file exectuable, run ``chmod +x check_ezproxy_run.py`` (in a bash system; this makes it so you shouldn't have to prepend each call with python)
 
-3. From the main directory, run ``python check_ezproxy_run.py -args`` (or ``./check_proxy_run.py -args`` if you did step 2 above)
+3. From the main directory, run ``python check_ezproxy_run.py -args`` (or ``./check_ezproxy_run.py -args`` if you did step 2 above)
 
 4. Run ``python setup.py install`` to install (after this, you can just use the ``check_ezproxy``, setup makes it available everywhere)
 
