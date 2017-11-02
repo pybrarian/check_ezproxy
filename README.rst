@@ -147,15 +147,15 @@ Example Calls
 Basic call to check link status on the OCLC Knowledge Base collection
 defined in your configuration.
 
-``check_proxy -u oclc -t link``
+``check_ezproxy -u oclc -t link``
 
 Call with a JSON config that we are saving.
 
-``check_proxy --config=./config.json -s``
+``check_ezproxy --config=./config.json -s``
 
 Check set OCLC knowledge base collection with an updated config.json (you can combine flags, but any flag that takes an argument must be the last one, and you can only have 1 of these when combining)
 
-``check_proxy --flush-config -sc ./config.json``
+``check_ezproxy --flush-config -sc ./config.json``
 
 Add New Url Sources or types of checks
 ======================================
