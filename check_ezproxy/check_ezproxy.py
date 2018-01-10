@@ -5,6 +5,7 @@ import sys
 
 import gevent
 import gevent.monkey
+gevent.monkey.patch_all()
 
 from .args import get_args
 from .get_config import get_config
@@ -12,8 +13,6 @@ from .registration import places_map, checks_map
 import check_ezproxy.places
 import check_ezproxy.checks
 
-
-gevent.monkey.patch_all()
 
 __version__ = '0.1.0'
 
