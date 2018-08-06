@@ -42,7 +42,7 @@ def run(config, args, output=output):
         output_goes_to = sys.stdout
 
     print('Getting URLs from {0}.'.format(args.urlsource))
-    urls = get_urls(config, args.proxy, args.kbart, url_position=args.url_position, title_position=args.title_position)
+    urls = get_urls(config, args.proxy, file_path=args.kbart)
 
     print('Running checks on URLs.')
     threads = [gevent.spawn(type_of_check, url, config) for url in urls]

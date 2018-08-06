@@ -34,6 +34,16 @@ def get_json_config(args, pickle_path):
             'config-template.py to config.py and change defaults.')
 
 
+def get_env_config():
+    return {
+        'ezproxy_prefix': os.environ.get('EZPROXY_PREFIX'),
+        'libguides_api_url': os.environ.get('LIBGUIDES_API_URL'),  # including api key
+        'ezproxy_error_text': os.environ.get('EZPROXY_ERROR_TEXT'),
+        'kb_wskey': os.environ.get('KB_WSKEY'),
+        'kb_collections': [collection for collection in os.environ.get('KB_COLLECTIONS', '').split(',')],  # tuple or list
+    }
+
+
 def get_config(args):
     pickle_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.pickle')
 
@@ -47,6 +57,8 @@ def get_config(args):
         config = unpickle_config(pickle_file)
     elif args.config_file:
         config = get_json_config(args, pickle_file)
+    elif 'EZPROXY_PREFIX' in os.environ:
+        config = get_env_config()
     else:
         try:
             config = cfg
