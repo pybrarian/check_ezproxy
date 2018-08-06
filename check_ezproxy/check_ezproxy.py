@@ -14,7 +14,7 @@ import check_ezproxy.places
 import check_ezproxy.checks
 
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 
 def output(result):
