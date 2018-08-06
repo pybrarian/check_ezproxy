@@ -25,7 +25,7 @@ def libguides_record_with_appropriate_proxy(api_record, config, proxy=None):
 
 
 @register('libguides', this_module)
-def get_from_libguides(config, proxy=None, file_path=None):
+def get_from_libguides(config, proxy=None, **kwargs):
     """
     Make a list of records from university LibGuide A-Z list.
 
@@ -43,7 +43,7 @@ def oclc_record_with_appropriate_proxy(api_entry, config, proxy=None):
 
 
 @register('oclc', this_module)
-def get_from_oclc(config, proxy=None, file_path=None):
+def get_from_oclc(config, proxy=None, **kwargs):
     """
     Get all online journals from the Knowledge base.
 
@@ -62,7 +62,7 @@ def kbart_with_appropriate_proxy(record, config, proxy):
 
 
 @register('kbart', this_module)
-def get_from_kbart(config, proxy=None, file_path=None):
+def get_from_kbart(config, proxy=None, file_path=None, **kwargs):
     path_to_file = os.path.abspath(os.path.expanduser(file_path))
     with pykbart.KbartReader(path_to_file) as reader:
         return [kbart_with_appropriate_proxy(record, config, proxy)

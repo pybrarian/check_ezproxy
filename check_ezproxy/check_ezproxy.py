@@ -30,8 +30,8 @@ def output(result):
 
 
 def run(config, args, output=output):
-    if args.kbart:
-        args.urlsource = 'kbart'
+    # if args.kbart and not args.:
+    #     args.urlsource = 'kbart'
     get_urls = places_map[args.urlsource]
     type_of_check = checks_map[args.type]
 
@@ -42,7 +42,7 @@ def run(config, args, output=output):
         output_goes_to = sys.stdout
 
     print('Getting URLs from {0}.'.format(args.urlsource))
-    urls = get_urls(config, args.proxy, args.kbart)
+    urls = get_urls(config, args.proxy, args.kbart, url_position=args.url_position, title_position=args.title_position)
 
     print('Running checks on URLs.')
     threads = [gevent.spawn(type_of_check, url, config) for url in urls]
