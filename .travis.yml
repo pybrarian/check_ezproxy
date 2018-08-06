@@ -1,0 +1,15 @@
+language: python
+jobs:
+  include:
+    - stage: pypi release
+      python: 3.6
+      script: skip
+      deploy:
+        provider: pypi
+        user: chill17
+        password:
+          secure: Q1/0dr8xMXEGew9/Grk0S6KyPsdGCI8cvWFZGZLKVr/BYY3GCOTZLiOTVa+A+8p6fOs6CIxLBGrHdhzgCLjAe+UpblYJtWurIoG623ga2sLpS/EiJgSSDfdARA5c21DjSCFjV17zuWPHCW7KQ3JcMnr4bmHT/Y7fJS9HfnsKtyR/g5xzPAyE/vrWNrea6meDig8E1s0GeQozLK95ZZDwPVe8DQJIbUghg+z+o8CwHgNStNsjXtD4F810AXuC9rknlFocX9YdB3LjYqn6gxW1SU9cbBNeeqDbreOyWq59+jKhbmC9NzXJS+ZLHRY/rAufohS1iD8QI50WlBDo3I2/rAO6TORjtVdXnkJDt0LD3Uer73SSJIQdGr2pWcZGFmB2FchMJsQAWOcW2eB6YzoOEF17EgIDF0erJKCu8VzB74sxz55E9OTDbDJlS25TtgPm+VVqSe5uERIzOOOyv0ehcpxrGXRz7vJOHC5STtyBus2FxbKxiMS2hbJfVrMFlW4N/OLo0GIV93HN6XtZKjPoM3Mr0yBHA+uLxuMXESDLjA9n0yUTJzSf+kLVoCc/UFqOvRPwitnthWM2NfjpD5W/4eQbfM0Phps8V9XsbUYLlKOBob5Ka1A7GsYNpeJbgpRPric/lN839DmDz6YlGdI7oEM7q0r+JF0ziyUskNqNSu8=
+        on:
+          tags: true
+          distributions: sdist bdist_wheel
+          repo: pybrarian/check_ezproxy
